@@ -1,0 +1,55 @@
+command = "\x31\x32\x33\x34\x35\x36\x37\x38\x39"
+
+
+--Checksum8 mod 256
+function checksum_MOD256 (string)
+  local sum = 0
+  for word = 1, #string do
+    sum = sum + string.byte(string,word)
+  end
+  sum = sum % 256
+  return string.format("\\x%02X", sum), sum
+end
+
+
+-- Checksum8 2s Complement Calculation
+function checksum_2sComplement (string)
+  local sum = 0
+  
+  for word = 1, #string do
+    sum = sum + string.byte(string,word)
+  end
+  sum = sum % 256
+  
+  sum = (~sum + 1 ) & 255
+  return string.format("\\x%02X", sum), sum
+end
+  
+
+-- Checksum8 XOR Calculation
+function checksum_XOR (hex_value)
+
+  local sum
+  local chk ={}
+  
+  for word = 1, #hex_value do
+    chk[word] = string.byte(hex_value,word)
+  end
+  
+  for i=1, #chk do
+    if i<#chk then
+      sum = chk[i] ~ chk[i+1]
+      chk[i+1] = sum
+    end
+  end
+  
+  return string.format("\\x%02X", sum)
+end
+
+-- Main Program
+
+print("The Checksum using XOR method is: " .. checksum_XOR (command))
+
+print("The Checksum using mod 256 method is: " .. checksum_MOD256 (command))
+
+print("The Checksum using 2s complement method is: " .. checksum_2sComplement (command))
