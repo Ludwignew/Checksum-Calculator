@@ -19,7 +19,6 @@ function checksum_2sComplement (string)
   for word = 1, #string do
     sum = sum + string.byte(string,word)
   end
-  sum = sum % 256
   
   sum = (~sum + 1 ) & 255
   return string.format("\\x%02X", sum), sum
